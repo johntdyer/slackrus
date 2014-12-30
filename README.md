@@ -51,6 +51,10 @@ func main() {
 ## Installation
 
     go get github.com/johntdyer/slackrus
+
+## License
+
+	The MIT License (MIT) - http://opensource.org/licenses/MIT
     
 ## Credits 
 
