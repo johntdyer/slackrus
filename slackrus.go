@@ -63,10 +63,12 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	msg.IconEmoji = sh.IconEmoji
 	msg.IconUrl = sh.IconUrl
 
+	fmt.Println(e)
+
 	attach := msg.NewAttachment()
-	attach.Text = e.Message
+	attach.Text = e.Fields //.Message
 	attach.Color = color
-	attach.Fallback = e.Message
+	attach.Fallback = e.Fields //e.Message
 	return sh.c.SendMessage(msg)
 
 }
