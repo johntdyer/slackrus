@@ -63,12 +63,35 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	msg.IconEmoji = sh.IconEmoji
 	msg.IconUrl = sh.IconUrl
 
-	fmt.Println(e)
-
 	attach := msg.NewAttachment()
-	attach.Text = e.Fields //.Message
+
+	// If there are fields we need to render them at attachments
+	if len(e.Data) > 0 {
+
+		// Add a header above field data
+		attach.Text = "Message fields"
+
+		for k, v := range e.Data {
+			slackField := &slack.Field{}
+
+			if str, ok := v.(string); ok {
+				slackField.Title = k
+				slackField.Value = str
+				// If the field is <= 20 then we'll set it to short
+				if len(str) <= 20 {
+					slackField.Short = true
+				}
+			}
+			attach.AddField(slackField)
+
+		}
+		attach.Pretext = e.Message
+	} else {
+		attach.Text = e.Message
+	}
+	attach.Fallback = e.Message
 	attach.Color = color
-	attach.Fallback = e.Fields //e.Message
+
 	return sh.c.SendMessage(msg)
 
 }
