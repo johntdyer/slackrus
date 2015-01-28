@@ -15,22 +15,22 @@ var (
 	client *slack.Client
 )
 
-// Hook is a logrus Hook for dispatching messages to the specified
+// SlackrusHook is a logrus Hook for dispatching messages to the specified
 // channel on Slack.
-type Hook struct {
+type SlackrusHook struct {
 	// Messages with a log level not contained in this array
 	// will not be dispatched. If nil, all messages will be dispatched.
-	AcceptedLevels []logrus.Level
-	HookURL        string
-	IconURL        string
-	Channel        string
-	IconEmoji      string
-	Username       string
-	c              *slack.Client
+	AcceptedLevels  []logrus.Level
+	SlackrusHookURL string
+	IconURL         string
+	Channel         string
+	IconEmoji       string
+	Username        string
+	c               *slack.Client
 }
 
 // Levels sets which levels to sent to slack
-func (sh *Hook) Levels() []logrus.Level {
+func (sh *SlackrusHook) Levels() []logrus.Level {
 	if sh.AcceptedLevels == nil {
 		return AllLevels
 	}
@@ -38,7 +38,7 @@ func (sh *Hook) Levels() []logrus.Level {
 }
 
 // Fire -  Sent event to slack
-func (sh *Hook) Fire(e *logrus.Entry) error {
+func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	if sh.c == nil {
 		if err := sh.initClient(); err != nil {
 			return err
@@ -98,7 +98,7 @@ func (sh *Hook) Fire(e *logrus.Entry) error {
 
 }
 
-func (sh *Hook) initClient() error {
+func (sh *SlackrusHook) initClient() error {
 	sh.c = &slack.Client{sh.HookURL}
 
 	if sh.Username == "" {
