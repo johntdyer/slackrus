@@ -63,7 +63,7 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	}
 
 	msg.IconEmoji = sh.IconEmoji
-	msg.IconURL = sh.IconURL
+	msg.IconUrl = sh.IconURL
 
 	attach := msg.NewAttachment()
 
