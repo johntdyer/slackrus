@@ -20,13 +20,13 @@ var (
 type SlackrusHook struct {
 	// Messages with a log level not contained in this array
 	// will not be dispatched. If nil, all messages will be dispatched.
-	AcceptedLevels  []logrus.Level
-	SlackrusHookURL string
-	IconURL         string
-	Channel         string
-	IconEmoji       string
-	Username        string
-	c               *slack.Client
+	AcceptedLevels []logrus.Level
+	HookURL        string
+	IconURL        string
+	Channel        string
+	IconEmoji      string
+	Username       string
+	c              *slack.Client
 }
 
 // Levels sets which levels to sent to slack
