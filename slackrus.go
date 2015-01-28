@@ -25,9 +25,8 @@ type SlackrusHook struct {
 	IconURL        string
 	Channel        string
 	IconEmoji      string
-
-	Username string
-	c        *slack.Client
+	Username       string
+	c              *slack.Client
 }
 
 // Levels sets which levels to sent to slack
