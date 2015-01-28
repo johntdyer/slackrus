@@ -4,6 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
+// Supported log levels
 var AllLevels = []logrus.Level{
 	logrus.DebugLevel,
 	logrus.InfoLevel,
@@ -13,7 +14,7 @@ var AllLevels = []logrus.Level{
 	logrus.PanicLevel,
 }
 
-// Returns every logging level above and including the given parameter.
+// LevelThreshold - Returns every logging level above and including the given parameter.
 func LevelThreshold(l logrus.Level) []logrus.Level {
 	for i := range AllLevels {
 		if AllLevels[i] == l {

@@ -1,4 +1,4 @@
-// Package hiprus provides a Hipchat hook for the logrus loggin package.
+// Package slackrus provides a Hipchat hook for the logrus loggin package.
 package slackrus
 
 import (
@@ -6,8 +6,9 @@ import (
 	"github.com/johntdyer/slack-go"
 )
 
+// Project version
 const (
-	VERISON = "0.0.1"
+	VERISON = "0.0.2"
 )
 
 var (
@@ -20,8 +21,8 @@ type SlackrusHook struct {
 	// Messages with a log level not contained in this array
 	// will not be dispatched. If nil, all messages will be dispatched.
 	AcceptedLevels []logrus.Level
-	HookUrl        string
-	IconUrl        string
+	HookURL        string
+	IconURL        string
 	Channel        string
 	IconEmoji      string
 
@@ -29,6 +30,7 @@ type SlackrusHook struct {
 	c        *slack.Client
 }
 
+// Levels sets which levels to sent to slack
 func (sh *SlackrusHook) Levels() []logrus.Level {
 	if sh.AcceptedLevels == nil {
 		return AllLevels
@@ -36,6 +38,7 @@ func (sh *SlackrusHook) Levels() []logrus.Level {
 	return sh.AcceptedLevels
 }
 
+// Fire -  Sent event to slack
 func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	if sh.c == nil {
 		if err := sh.initClient(); err != nil {
@@ -61,7 +64,7 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	}
 
 	msg.IconEmoji = sh.IconEmoji
-	msg.IconUrl = sh.IconUrl
+	msg.IconURL = sh.IconURL
 
 	attach := msg.NewAttachment()
 
@@ -97,7 +100,7 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 }
 
 func (sh *SlackrusHook) initClient() error {
-	sh.c = &slack.Client{sh.HookUrl}
+	sh.c = &slack.Client{sh.HookURL}
 
 	if sh.Username == "" {
 		sh.Username = "SlackRus"
