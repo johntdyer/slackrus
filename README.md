@@ -23,7 +23,7 @@ func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 
 	logrus.AddHook(&slackrus.SlackrusHook{
-		HookUrl:        "https://hooks.slack.com/services/abc123/defghijklmnopqrstuvwxyz",
+		HookURL:        "https://hooks.slack.com/services/abc123/defghijklmnopqrstuvwxyz",
 		AcceptedLevels: slackrus.LevelThreshold(logrus.DebugLevel),
 		Channel:        "#slack-testing",
 		IconEmoji:      ":ghost:",
@@ -40,11 +40,11 @@ func main() {
 ## Parameters
 
 #### Required
-  * HookUrl
+  * HookURL
   
 #### Optional
   * IconEmoji
-  * IconUrl
+  * IconURL
   * Username
   * Channel
 
