@@ -2,6 +2,8 @@
 package slackrus
 
 import (
+	"fmt"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/johntdyer/slack-go"
 )
@@ -76,16 +78,14 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 		for k, v := range e.Data {
 			slackField := &slack.Field{}
 
-			if str, ok := v.(string); ok {
-				slackField.Title = k
-				slackField.Value = str
-				// If the field is <= 20 then we'll set it to short
-				if len(str) <= 20 {
-					slackField.Short = true
-				}
+			slackField.Title = k
+			slackField.Value = fmt.Sprint(v)
+			// If the field is <= 20 then we'll set it to short
+			if len(slackField.Value) <= 20 {
+				slackField.Short = true
 			}
-			attach.AddField(slackField)
 
+			attach.AddField(slackField)
 		}
 		attach.Pretext = e.Message
 	} else {
