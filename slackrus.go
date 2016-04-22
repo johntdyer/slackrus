@@ -13,10 +13,6 @@ const (
 	VERISON = "0.0.2"
 )
 
-var (
-	client *slack.Client
-)
-
 // SlackrusHook is a logrus Hook for dispatching messages to the specified
 // channel on Slack.
 type SlackrusHook struct {
@@ -28,7 +24,6 @@ type SlackrusHook struct {
 	Channel        string
 	IconEmoji      string
 	Username       string
-	c              *slack.Client
 }
 
 // Levels sets which levels to sent to slack
@@ -41,12 +36,6 @@ func (sh *SlackrusHook) Levels() []logrus.Level {
 
 // Fire -  Sent event to slack
 func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
-	if sh.c == nil {
-		if err := sh.initClient(); err != nil {
-			return err
-		}
-	}
-
 	color := ""
 	switch e.Level {
 	case logrus.DebugLevel:
@@ -60,12 +49,11 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	}
 
 	msg := &slack.Message{
-		Username: sh.Username,
-		Channel:  sh.Channel,
+		Username:  sh.Username,
+		Channel:   sh.Channel,
+		IconEmoji: sh.IconEmoji,
+		IconUrl:   sh.IconURL,
 	}
-
-	msg.IconEmoji = sh.IconEmoji
-	msg.IconUrl = sh.IconURL
 
 	attach := msg.NewAttachment()
 
@@ -94,16 +82,6 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	attach.Fallback = e.Message
 	attach.Color = color
 
-	return sh.c.SendMessage(msg)
-
-}
-
-func (sh *SlackrusHook) initClient() error {
-	sh.c = &slack.Client{sh.HookURL}
-
-	if sh.Username == "" {
-		sh.Username = "SlackRus"
-	}
-
-	return nil
+	c := slack.NewClient(sh.HookURL)
+	return c.SendMessage(msg)
 }
