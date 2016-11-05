@@ -47,7 +47,7 @@ func main() {
   * IconURL
   * Username
   * Channel
-	* Asynchronous
+  * Asynchronous
 
 ## Installation
 
