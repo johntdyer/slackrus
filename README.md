@@ -1,7 +1,7 @@
 slackrus
 ========
 
-Slack hook for [Logrus](https://github.com/Sirupsen/logrus). 
+Slack hook for [Logrus](https://github.com/Sirupsen/logrus).
 
 ## Use
 
@@ -41,17 +41,18 @@ func main() {
 
 #### Required
   * HookURL
-  
+
 #### Optional
   * IconEmoji
   * IconURL
   * Username
   * Channel
+	* Asynchronous
 
 ## Installation
 
     go get github.com/johntdyer/slackrus
-    
-## Credits 
+
+## Credits
 
 Based on hipchat handler by [nuboLAB](https://github.com/nubo/hiprus)

@@ -24,6 +24,7 @@ type SlackrusHook struct {
 	Channel        string
 	IconEmoji      string
 	Username       string
+	Asynchronous   bool
 }
 
 // Levels sets which levels to sent to slack
@@ -83,5 +84,11 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	attach.Color = color
 
 	c := slack.NewClient(sh.HookURL)
+
+	if sh.Asynchronous {
+		go c.SendMessage(msg)
+		return nil
+	}
+
 	return c.SendMessage(msg)
 }
