@@ -1,9 +1,6 @@
 slackrus
 ========
 
-<<<<<<< HEAD
-Slack hook for [Logrus](https://github.com/Sirupsen/logrus).
-=======
 Slack hook for [Logrus](https://github.com/sirupsen/logrus). 
 >>>>>>> Fix import path
 
