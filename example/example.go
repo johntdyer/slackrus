@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/johntdyer/slackrus"
+	logrus "github.com/sirupsen/logrus"
 )
 
 func main() {

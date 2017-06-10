@@ -4,13 +4,13 @@ package slackrus
 import (
 	"fmt"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/johntdyer/slack-go"
+	"github.com/sirupsen/logrus"
 )
 
 // Project version
 const (
-	VERISON = "0.0.2"
+	VERISON = "0.0.3"
 )
 
 // SlackrusHook is a logrus Hook for dispatching messages to the specified

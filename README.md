@@ -1,7 +1,11 @@
 slackrus
 ========
 
+<<<<<<< HEAD
 Slack hook for [Logrus](https://github.com/Sirupsen/logrus).
+=======
+Slack hook for [Logrus](https://github.com/sirupsen/logrus). 
+>>>>>>> Fix import path
 
 ## Use
 
@@ -9,7 +13,7 @@ Slack hook for [Logrus](https://github.com/Sirupsen/logrus).
 package main
 
 import (
-	logrus "github.com/Sirupsen/logrus"
+	logrus "github.com/sirupsen/logrus"
 	"github.com/johntdyer/slackrus"
 	"os"
 )
