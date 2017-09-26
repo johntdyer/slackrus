@@ -22,7 +22,7 @@ func main() {
 	logrus.SetOutput(os.Stderr)
 
 	logrus.SetLevel(logrus.DebugLevel)
-
+	
 	logrus.AddHook(&slackrus.SlackrusHook{
 		HookURL:        "https://hooks.slack.com/services/abc123/defghijklmnopqrstuvwxyz",
 		AcceptedLevels: slackrus.LevelThreshold(logrus.DebugLevel),
@@ -38,6 +38,20 @@ func main() {
 
 ```
 
+### Extra fields
+You can also add some extra fields to be sent with every slack message
+```go
+extra := map[string]interface{}{
+			"hostname": "nyc-server-1",
+			"tag": "some-tag",
+		}
+	
+logrus.AddHook(&slackrus.SlackrusHook{
+		//HookURL:        "https://hooks.slack.com/services/abc123/defghijklmnopqrstuvwxyz",
+		Extra: 			extra,
+})
+```
+
 ## Parameters
 
 #### Required
@@ -49,7 +63,7 @@ func main() {
   * Username
   * Channel
   * Asynchronous
-
+  * Extra
 ## Installation
 
     go get github.com/johntdyer/slackrus
