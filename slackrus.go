@@ -25,6 +25,7 @@ type SlackrusHook struct {
 	IconEmoji      string
 	Username       string
 	Asynchronous   bool
+	Extra          map[string]interface{}
 }
 
 // Levels sets which levels to sent to slack
@@ -58,13 +59,14 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 
 	attach := msg.NewAttachment()
 
+	newEntry := sh.newEntry(e)
 	// If there are fields we need to render them at attachments
-	if len(e.Data) > 0 {
+	if len(newEntry.Data) > 0 {
 
 		// Add a header above field data
 		attach.Text = "Message fields"
 
-		for k, v := range e.Data {
+		for k, v := range newEntry.Data {
 			slackField := &slack.Field{}
 
 			slackField.Title = k
@@ -76,11 +78,11 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 
 			attach.AddField(slackField)
 		}
-		attach.Pretext = e.Message
+		attach.Pretext = newEntry.Message
 	} else {
-		attach.Text = e.Message
+		attach.Text = newEntry.Message
 	}
-	attach.Fallback = e.Message
+	attach.Fallback = newEntry.Message
 	attach.Color = color
 
 	c := slack.NewClient(sh.HookURL)
@@ -91,4 +93,25 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	}
 
 	return c.SendMessage(msg)
+}
+
+func (sh *SlackrusHook) newEntry(entry *logrus.Entry) *logrus.Entry {
+	data := map[string]interface{}{}
+
+	for k, v := range sh.Extra {
+		data[k] = v
+	}
+	for k, v := range entry.Data {
+		data[k] = v
+	}
+
+	newEntry := &logrus.Entry{
+		Logger:  entry.Logger,
+		Data:    data,
+		Time:    entry.Time,
+		Level:   entry.Level,
+		Message: entry.Message,
+	}
+
+	return newEntry
 }
