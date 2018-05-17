@@ -26,7 +26,7 @@ type SlackrusHook struct {
 	Username       string
 	Asynchronous   bool
 	Extra          map[string]interface{}
-	Enabled        bool
+	Disabled       bool
 }
 
 // Levels sets which levels to sent to slack
@@ -37,14 +37,9 @@ func (sh *SlackrusHook) Levels() []logrus.Level {
 	return sh.AcceptedLevels
 }
 
-// SetEnabled can be used to disable slackrus logging
-func (sh *SlackrusHook) SetEnabled(enabled bool) {
-	sh.Enabled = enabled
-}
-
 // Fire -  Sent event to slack
 func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
-	if !sh.Enabled {
+	if sh.Disabled {
 		return nil
 	}
 	
