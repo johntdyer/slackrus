@@ -1,4 +1,4 @@
-// Package slackrus provides a Hipchat hook for the logrus loggin package.
+// Package slackrus provides a Slack hook for the logrus loggin package.
 package slackrus
 
 import (
