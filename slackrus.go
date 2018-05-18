@@ -26,6 +26,7 @@ type SlackrusHook struct {
 	Username       string
 	Asynchronous   bool
 	Extra          map[string]interface{}
+	Disabled       bool
 }
 
 // Levels sets which levels to sent to slack
@@ -38,6 +39,10 @@ func (sh *SlackrusHook) Levels() []logrus.Level {
 
 // Fire -  Sent event to slack
 func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
+	if sh.Disabled {
+		return nil
+	}
+	
 	color := ""
 	switch e.Level {
 	case logrus.DebugLevel:
