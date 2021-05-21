@@ -3,6 +3,7 @@ package slackrus
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/johntdyer/slack-go"
 	"github.com/sirupsen/logrus"
@@ -27,6 +28,14 @@ type SlackrusHook struct {
 	Asynchronous   bool
 	Extra          map[string]interface{}
 	Disabled       bool
+	// SortFields if set to true will sort Fields before sending them to slack. By default they
+	// are sorted in alphabetical order. For finer grained control, SortPriorities can be used.
+	SortFields bool
+	// SortPriorities if set will modify the straight alphabetical sort used when SortFields is set.
+	// It is a map of field keys to sort priority, causing keys with higher priorities to appear first.
+	// Any field field keys that do not appear in SortPriorities will appear after all those that do
+	// and be sorted in alphabetical order.
+	SortPriorities map[string]int
 }
 
 // Levels sets which levels to sent to slack
@@ -42,7 +51,7 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	if sh.Disabled {
 		return nil
 	}
-	
+
 	color := ""
 	switch e.Level {
 	case logrus.DebugLevel:
@@ -89,6 +98,28 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 	}
 	attach.Fallback = newEntry.Message
 	attach.Color = color
+
+	if sh.SortFields {
+		sort.SliceStable(attach.Fields, func(i, j int) bool {
+			iTitle, jTitle := attach.Fields[i].Title, attach.Fields[j].Title
+			if sh.SortPriorities == nil {
+				return iTitle < jTitle
+			}
+			iVal, iOK := sh.SortPriorities[iTitle]
+			jVal, jOK := sh.SortPriorities[jTitle]
+
+			if iOK && !jOK {
+				return true
+			}
+			if !iOK && jOK {
+				return false
+			}
+			if (!iOK && !jOK) || iVal == jVal {
+				return iTitle < jTitle
+			}
+			return iVal > jVal
+		})
+	}
 
 	c := slack.NewClient(sh.HookURL)
 
