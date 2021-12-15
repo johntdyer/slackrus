@@ -14,12 +14,18 @@ const (
 	VERISON = "0.0.3"
 )
 
+// Filter is a filter applied to log entries to filter out any messages which are too noisy.
+// The filter should return true if the message should be included, and false if not.
+type Filter func(entry *logrus.Entry) bool
+
 // SlackrusHook is a logrus Hook for dispatching messages to the specified
 // channel on Slack.
 type SlackrusHook struct {
 	// Messages with a log level not contained in this array
 	// will not be dispatched. If nil, all messages will be dispatched.
 	AcceptedLevels []logrus.Level
+	// Filters are applied to messages to determine if any entry should not be send out.
+	Filters        []Filter
 	HookURL        string
 	IconURL        string
 	Channel        string
@@ -62,6 +68,13 @@ func (sh *SlackrusHook) Fire(e *logrus.Entry) error {
 		color = "danger"
 	default:
 		color = "warning"
+	}
+
+	// If any of the filters rejects the message then we return early
+	for _, filter := range sh.Filters {
+		if !filter(e) {
+			return nil
+		}
 	}
 
 	msg := &slack.Message{

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/johntdyer/slack-go"
 	"github.com/sirupsen/logrus"
@@ -135,5 +136,72 @@ func TestFieldSortPriorities(t *testing.T) {
 	}
 	if exp, got := fourth, fields[3].Title; exp != got {
 		t.Errorf("3rd field title not as expected: exp: %q, got: %q", exp, got)
+	}
+}
+
+type filterMock struct {
+	called     int
+	rejectNext bool
+}
+
+func (f *filterMock) Filter(e *logrus.Entry) bool {
+	f.called++
+
+	if f.rejectNext {
+		f.rejectNext = false
+		return false
+	}
+	return true
+}
+
+func TestFilters(t *testing.T) {
+	f := NewFixture(t)
+	defer f.Cleanup()
+
+	mock := filterMock{}
+
+	logger := logrus.New()
+	logger.AddHook(&SlackrusHook{
+		HookURL:    f.URL(),
+		Channel:    "#slack-testing",
+		Filters: []Filter{
+			mock.Filter,
+		},
+	})
+
+	logger.Info("hi there")
+	<-f.MsgRcvd
+
+	if exp, got := 1, len(f.Messages); exp != got {
+		t.Fatalf("received unexpected number of messages: exp: %d, got: %d", exp, got)
+	}
+	if mock.called != 1 {
+		t.Fatalf("filter should have been called")
+	}
+
+	logger.Info("hi there")
+	<-f.MsgRcvd
+
+	if exp, got := 2, len(f.Messages); exp != got {
+		t.Fatalf("received unexpected number of messages: exp: %d, got: %d", exp, got)
+	}
+	if mock.called != 2 {
+		t.Fatalf("filter should have been called")
+	}
+
+	// set the mock to reject the next
+	mock.rejectNext = true
+
+	logger.Info("hi there")
+
+	select {
+	case <-f.MsgRcvd:
+		t.Fatalf("did not expect a message to be send")
+	case <-time.After(10 * time.Millisecond):
+		// no message after 10ms, should be fine
+	}
+
+	if exp, got := 2, len(f.Messages); exp != got {
+		t.Fatalf("received unexpected number of messages: exp: %d, got: %d", exp, got)
 	}
 }
