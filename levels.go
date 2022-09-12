@@ -6,6 +6,7 @@ import (
 
 // Supported log levels
 var AllLevels = []logrus.Level{
+	logrus.TraceLevel,
 	logrus.DebugLevel,
 	logrus.InfoLevel,
 	logrus.WarnLevel,
