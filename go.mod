@@ -1,10 +1,10 @@
 module github.com/johntdyer/slackrus
 
-go 1.15
+go 1.20
 
 require (
-	github.com/johntdyer/slack-go v0.0.0-20180213144715-95fac1160b22
-	github.com/sirupsen/logrus v1.8.1
+	github.com/johntdyer/slack-go v0.0.0-20230314151037-c5bf334f9b6e
+	github.com/sirupsen/logrus v1.9.0
 )
 
-require golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
+require golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
